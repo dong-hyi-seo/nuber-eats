@@ -1,0 +1,10 @@
+dist
+node_modules
+test
+
+.next
+out
+
+.nuxt
+.cache/
+.yarn-intergrity
