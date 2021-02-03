@@ -8,3 +8,8 @@ out
 .nuxt
 .cache/
 .yarn-intergrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.dev
