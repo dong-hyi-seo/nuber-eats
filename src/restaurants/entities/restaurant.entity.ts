@@ -33,6 +33,4 @@ export class Restaurant {
   @Field(type => String)
   @Column()
   categoryName: string;
-
-
 }
