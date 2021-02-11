@@ -6,9 +6,9 @@ import { CreateRestaurantDto } from './create-restaurant.dto';
  * PartialType 사용하여 CreateRestaurantDto 에서 id를 가져옴
  */
 @InputType()
-export class UpdateRestaurantInputType extends PartialType(CreateRestaurantDto) {}
+class UpdateRestaurantInputType extends PartialType(CreateRestaurantDto) {}
 
-@ArgsType()
+@InputType()
 export class UpdateRestaurantDto {
 
   @Field(type => Number)
