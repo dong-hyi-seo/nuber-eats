@@ -6,7 +6,7 @@ import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
  * Create graphql restaurant field = @ObjectType()
  * AND postgresql entity 동시생성 = @Entity() - 자동 DB에 마이그레이션 진행
  * 즉, graphql field, postgresql field 동시에 정의
- * 위 graphql, postgresql field 뿐만아니라 create restaurant input dto 역할도 동시에 해줄수있다 (@InputType)
+ * 위 graphql, postgresql field 뿐만아니라 create restaurant input dtos 역할도 동시에 해줄수있다 (@InputType)
  */
 @InputType({isAbstract: true}) //createRestaurant 가 다른타입으로 상속받아 추상화 적용
 @ObjectType()
