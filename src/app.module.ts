@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 import { Restaurant } from './restaurants/entities/restaurant.entity'; // 유효성 검사 라이브러리 (라이브러리가 자바스크립트일경우 이와같이 import한다)
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { UsersResolver } from './users/users.resolver';
 
 @Module({
   imports: [
@@ -36,6 +37,8 @@ import { User } from './users/entities/user.entity';
       entities: [User],
     }),
     GraphQLModule.forRoot({
+      playground: process.env.NODE_ENV !== 'production',
+      installSubscriptionHandlers: true,
       autoSchemaFile: true,
     }),
     UsersModule,

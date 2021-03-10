@@ -2,7 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { CreateAccountInput } from './dto/create-account.dto';
+import { CreateAccountInput, CreateAccountOutput } from './dto/create-account.dto';
+import { LoginInput, LoginOutput } from './dto/login.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,21 +12,49 @@ export class UsersService {
   ) {}
 
   async createAccount({ email, password, role }: CreateAccountInput)
-  : Promise<[boolean, string?]>{
+  : Promise<CreateAccountOutput> {
     try {
       const exists = await this.users.findOne({ email });
       if(exists){
-        return [false, 'There is a user with that email already'];
+        return { ok: false, error: 'There is a user with that email already' };
       }
 
       //create는 단지 entity를 create할뿐..
       await this.users.save(this.users.create({email, password, role}));
-
-      return [true];
+      return { ok: true };
     } catch(e) {
       //make error
-      return [false, 'Could not create account'];
+      return { ok: false, error: "Couldn't create account" };
     }
-    //hash the password
+  }
+
+  async login({email, password}: LoginInput) : Promise<LoginOutput> {
+    //check if the password is correct
+    //make a jwt and give it to the user
+    try {
+      const user = await this.users.findOne({email});
+      if(!user){
+        return {
+          ok: false,
+          error: 'User not found',
+        }
+      }
+      const passwordCorrect = await user.checkPassword(password);
+      if(!passwordCorrect) {
+        return {
+          ok: false,
+          error: 'Wrong password',
+        }
+      }
+      return {
+        ok: true,
+        token: 'lalalalala',
+      }
+    } catch(error) {
+      return {
+        ok: false,
+        error,
+      }
+    }
   }
 }
