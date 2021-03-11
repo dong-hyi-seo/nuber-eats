@@ -8,6 +8,7 @@ import {
 } from './dto/create-account.dto';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { JwtService } from '../jwt/jwt.service';
+import { EditProfileInput } from './dto/edit-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -70,6 +71,11 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
+    console.log('id = ', id);
     return this.users.findOne({ id });
+  }
+
+  async editProfile(userId: number, { email, password }: EditProfileInput) {
+    return this.users.update(userId, { email, password });
   }
 }
