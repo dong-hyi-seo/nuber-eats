@@ -18,7 +18,7 @@ export class JwtMiddleware implements NestMiddleware {
       try {
         const decoded = this.jwtService.verify(token.toString());
         if (typeof decoded === 'object' && decoded.hasOwnProperty('id')) {
-          const user = await this.userService.findById(decoded['id']);
+          const { user } = await this.userService.findById(decoded['id']);
           req['user'] = user; //request apollo server context 공유가가능
         }
       } catch (e) {
