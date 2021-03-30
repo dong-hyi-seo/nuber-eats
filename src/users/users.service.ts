@@ -12,6 +12,7 @@ import { EditProfileInput, EditProfileOutput } from './dto/edit-profile.dto';
 import { Verification } from './entities/verification.entity';
 import { VerifyEmailOutput } from './dto/verify-email.dto';
 import { UserProfileOutput } from './dto/user-profile.dto';
+import { MailService } from '../mail/mail.service.';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     @InjectRepository(Verification)
     private readonly verification: Repository<Verification>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async createAccount({
@@ -37,11 +39,14 @@ export class UsersService {
       const user = await this.users.save(
         this.users.create({ email, password, role }),
       );
-      await this.verification.save(
+      const verification = await this.verification.save(
         this.verification.create({
           user,
         }),
       );
+
+      //send mail
+      this.mailService.sendVerificationEmail(user.email, verification.code);
       return { ok: true };
     } catch (e) {
       //make error
@@ -72,8 +77,6 @@ export class UsersService {
         };
       }
       //ConfigService
-      //const token = jwt.sign({id: user.id, password:'12345'}, this.config.get('SECRET_KEY'));
-      console.log(user);
       const token = this.jwtService.sign(user.id);
       return {
         ok: true,
@@ -110,7 +113,10 @@ export class UsersService {
       if (email) {
         user.email = email;
         user.verified = false;
-        await this.verification.save(this.verification.create({ user }));
+        const verification = await this.verification.save(
+          this.verification.create({ user }),
+        );
+        this.mailService.sendVerificationEmail(user.email, verification.code);
       }
       if (password) {
         user.password = password;
@@ -131,7 +137,6 @@ export class UsersService {
         { relations: ['user'] },
       );
       if (verification) {
-        console.log(verification);
         verification.user.verified = true;
         await this.users.save(verification.user);
         await this.verification.delete(verification.id);
