@@ -25,7 +25,7 @@ import { MailModule } from './mail/mail.module';
       ignoreEnvFile: process.env.NODE_ENV === 'prod', //서버에 deploy 할 떄 환경변수 파일을 사용하지 않겠다
       validationSchema: Joi.object({
         //env 유효성검사
-        NODE_ENV: Joi.string().valid('dev', 'prod').required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
         MAILGUN_API_KEY: Joi.string().required(),
         MAILGUN_DOMAIN_NAME: Joi.string().required(),
         MAILGUN_FROM_EMAIL: Joi.string().required(),
@@ -45,7 +45,8 @@ import { MailModule } from './mail/mail.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
-      logging: process.env.NODE_ENV !== 'prod',
+      logging:
+        process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
       entities: [User, Verification],
     }),
     GraphQLModule.forRoot({
