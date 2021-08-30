@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import { CoreEntity } from '../../common/entities/core.entity';
 import {
   Field,
@@ -8,7 +8,8 @@ import {
 } from '@nestjs/graphql';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
+import { Restaurant } from '../../restaurants/entities/restaurant.entity';
 
 enum UserRole {
   Owner,
@@ -18,6 +19,7 @@ enum UserRole {
 // graphql enum
 registerEnumType(UserRole, { name: 'UserRole' });
 
+//objectType과 inputType의 name설정을해준다 안해주면 같은이름 중복으로 에러난다.
 @InputType('UserInputType', { isAbstract: true })
 @ObjectType()
 @Entity()
@@ -39,7 +41,12 @@ export class User extends CoreEntity {
 
   @Column({ default: false })
   @Field((type) => Boolean)
+  @IsBoolean()
   verified: boolean;
+
+  @Field((type) => [Restaurant])
+  @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
+  restaurants: Restaurant[];
 
   /**
    * DB insert & update 전에 사용함

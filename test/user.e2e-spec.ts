@@ -49,8 +49,7 @@ describe('UserModule (e2e)', () => {
 
   describe('createAccount', () => {
     it('should create account', () => {
-      return request(app.getHttpServer())
-        .post(GRAPHQL_ENDPOINT)
+      return baseTest()
         .send({
           query: `
          mutation {

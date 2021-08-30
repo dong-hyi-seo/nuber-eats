@@ -1,6 +1,9 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Category } from './category.entity';
+import { User } from '../../users/entities/user.entity';
 
 /**
  * Create graphql restaurant field = @ObjectType()
@@ -8,29 +11,37 @@ import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
  * 즉, graphql field, postgresql field 동시에 정의
  * 위 graphql, postgresql field 뿐만아니라 create restaurant input dtos 역할도 동시에 해줄수있다 (@InputType)
  */
-@InputType({isAbstract: true}) //createRestaurant 가 다른타입으로 상속받아 추상화 적용
+@InputType('RestaurantInputType', { isAbstract: true }) //createRestaurant 가 다른타입으로 상속받아 추상화 적용
 @ObjectType()
 @Entity()
-export class Restaurant {
-
-  @Field(type => Number)
-  @PrimaryGeneratedColumn()
-  id: number
-
-  @Field(type => String)
+export class Restaurant extends CoreEntity {
+  @Field((type) => String)
   @Column()
   @IsString()
   @Length(5)
   name: string;
 
-  @Field(type => Boolean, { nullable: true }) //해당 값을 안보내도 true로 자동셋
-  @Column({ default: true })
-  @IsOptional()
-  @IsBoolean()
-  isVegan: boolean;
+  @Field((type) => String)
+  @Column()
+  @IsString()
+  coverImg: string;
 
-  @Field(type => String, {defaultValue: "강남"})
+  @Field((type) => String, { defaultValue: '강남' })
   @Column()
   @IsString()
   address: string;
+
+  /**
+   * 레스토랑을 최초생성시 카테고리가 없는 레스토랑으로 생성되게끔
+   */
+  @Field((type) => Category, { nullable: true })
+  @ManyToOne((type) => Category, (category) => category.restaurant, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  category: Category;
+
+  @Field((type) => User)
+  @ManyToOne((type) => User, (user) => user.restaurants)
+  owner: User;
 }
