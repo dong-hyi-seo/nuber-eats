@@ -12,12 +12,14 @@ import { AuthUser } from '../auth/auth-user.decorator';
 import { UserProfileInput, UserProfileOutput } from './dto/user-profile.dto';
 import { EditProfileInput, EditProfileOutput } from './dto/edit-profile.dto';
 import { VerifyEmailInput, VerifyEmailOutput } from './dto/verify-email.dto';
+import { Role } from '../auth/role.decorator';
 
 @Resolver((of) => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Mutation((returns) => CreateAccountOutput)
+  @Role(['Delivery'])
   async createAccount(
     @Args('input') createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
@@ -34,13 +36,13 @@ export class UsersResolver {
    * @param authUser
    */
   //jwt middleware -> graphql context -> guard (token check) or Authuser decorator
+  @Role(['Any'])
   @Query((returns) => User)
-  @UseGuards(AuthGuard)
   me(@AuthUser() authUser: User) {
     return authUser;
   }
 
-  @UseGuards(AuthGuard)
+  @Role(['Any'])
   @Query((returns) => UserProfileOutput)
   async userProfile(
     @Args() userProfileInput: UserProfileInput,
@@ -48,7 +50,7 @@ export class UsersResolver {
     return this.usersService.findById(userProfileInput.userId);
   }
 
-  @UseGuards(AuthGuard)
+  @Role(['Any'])
   @Mutation((returns) => EditProfileOutput)
   async editProfile(
     @Args('input') editProfileInput: EditProfileInput,

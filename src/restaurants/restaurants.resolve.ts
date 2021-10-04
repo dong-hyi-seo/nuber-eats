@@ -7,6 +7,7 @@ import {
 import { RestaurantService } from './restaurants.service';
 import { AuthUser } from '../auth/auth-user.decorator';
 import { User } from '../users/entities/user.entity';
+import { Role } from '../auth/role.decorator';
 
 /**
  * Resolver : Graphql 결과 정의
@@ -19,6 +20,7 @@ export class RestaurantsResolver {
   /**
    * @param createRestaurantDto
    * 레스토랑 생성
+   * meta 데이터를 user owner로 셋팅하여 보호한다.
    */
   @Mutation((returns) => CreateRestaurantOutput)
   async createRestaurant(
