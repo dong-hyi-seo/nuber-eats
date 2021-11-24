@@ -1,4 +1,4 @@
-import { Injectable, SetMetadata } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Restaurant } from './entities/restaurant.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,6 +12,7 @@ import {
   EditRestaurantInput,
   EditRestaurantOutput,
 } from './dtos/edit-restaurant.dto';
+import { CategoryRepository } from './repositories/CategoryRepository';
 
 @Injectable()
 export class RestaurantService {
@@ -19,7 +20,7 @@ export class RestaurantService {
     @InjectRepository(Restaurant) // decorator 사용 = (const restaurantRepository = connection.getRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
     @InjectRepository(Category)
-    private readonly categories: Repository<Category>,
+    private readonly categories: CategoryRepository,
   ) {
     'hello how are'.replace(' ', '-');
   }
@@ -31,18 +32,9 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner;
-
-      const categoryName = createRestaurantInput.categoryName
-        .trim()
-        .toLowerCase();
-      const categorySlug = categoryName.replace(/ /g, '-');
-      let category = await this.categories.findOne({ slug: categorySlug });
-      if (!category) {
-        category = await this.categories.save(
-          this.categories.create({ slug: categorySlug, name: categoryName }),
-        );
-      }
-      newRestaurant.category = category;
+      newRestaurant.category = await this.categories.getOrCreate(
+        createRestaurantInput.categoryName,
+      );
       await this.restaurants.save(newRestaurant);
       return {
         ok: true,
@@ -58,5 +50,47 @@ export class RestaurantService {
   async editRestaurant(
     owner: User,
     editRestaurantInput: EditRestaurantInput,
-  ): Promise<EditRestaurantOutput> {}
+  ): Promise<EditRestaurantOutput> {
+    try {
+      const restaurant = await this.restaurants.findOne(
+        editRestaurantInput.restaurantId,
+        {
+          loadRelationIds: true,
+        },
+      );
+
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found',
+        };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: "You can't edit a restaurant that you don't own",
+        };
+      }
+      let category: Category = null;
+      if (editRestaurantInput.categoryName) {
+        category = await this.categories.getOrCreate(
+          editRestaurantInput.categoryName,
+        );
+      }
+      await this.restaurants.save([
+        {
+          id: editRestaurantInput.restaurantId,
+          ...editRestaurantInput,
+        },
+      ]);
+      return {
+        ok: true,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not edit Restaurant',
+      };
+    }
+  }
 }
