@@ -1,4 +1,11 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Restaurant } from './entities/restaurant.entity';
 import {
   CreateRestaurantInput,
@@ -16,6 +23,8 @@ import {
   DeleteRestaurantInput,
   DeleteRestaurantOutput,
 } from './dtos/delete-restaurant.dto';
+import { Category } from './entities/category.entity';
+import { AllCategoriesOutput } from './dtos/all-categories.dto';
 
 /**
  * Resolver : Graphql 결과 정의
@@ -64,5 +73,24 @@ export class RestaurantsResolver {
       owner,
       deleteRestaurantInput,
     );
+  }
+}
+
+@Resolver((of) => Category)
+export class CategoryResolver {
+  constructor(private readonly restaurantService: RestaurantService) {}
+
+  /**
+   * 해당 resolver 안에있는 @Query 함수에 대해서 response data에 아래의 \
+   * restaurantCount값도 같이보내준다. 그것이 바로 ResolveField
+   */
+  @ResolveField((type) => Int)
+  restaurantCount(): number {
+    return 80;
+  }
+
+  @Query((type) => AllCategoriesOutput)
+  allCategories(): Promise<AllCategoriesOutput> {
+    return this.restaurantService.allCategory();
   }
 }
