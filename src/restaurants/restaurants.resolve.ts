@@ -2,6 +2,7 @@ import {
   Args,
   Int,
   Mutation,
+  Parent,
   Query,
   ResolveField,
   Resolver,
@@ -83,10 +84,11 @@ export class CategoryResolver {
   /**
    * 해당 resolver 안에있는 @Query 함수에 대해서 response data에 아래의 \
    * restaurantCount값도 같이보내준다. 그것이 바로 ResolveField
+   * @Parent() -> 해당 parent field에 접근이 가능하게 함
    */
   @ResolveField((type) => Int)
-  restaurantCount(): number {
-    return 80;
+  restaurantCount(@Parent() category: Category): Promise<number> {
+    return this.restaurantService.countRestaurants(category);
   }
 
   @Query((type) => AllCategoriesOutput)
