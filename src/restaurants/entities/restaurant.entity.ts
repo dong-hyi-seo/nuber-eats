@@ -42,7 +42,7 @@ export class Restaurant extends CoreEntity {
    * 레스토랑을 최초생성시 카테고리가 없는 레스토랑으로 생성되게끔
    */
   @Field((type) => Category, { nullable: true })
-  @ManyToOne((type) => Category, (category) => category.restaurant, {
+  @ManyToOne((type) => Category, (category) => category.restaurants, {
     nullable: true,
     onDelete: 'SET NULL',
   })

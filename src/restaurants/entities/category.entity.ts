@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Restaurant } from './restaurant.entity';
@@ -31,7 +31,7 @@ export class Category extends CoreEntity {
   slug: string;
 
   //카테고리는 많은 레스토랑을 가진다 (카테고리를 지울때 mapping된 레스토랑의 category를 빈값으로 셋팅해줘야함)
-  @Field((type) => [Restaurant])
+  @Field((type) => [Restaurant], { nullable: true })
   @OneToMany((type) => Restaurant, (restaurant) => restaurant.category)
-  restaurant: Restaurant[];
+  restaurants: Restaurant[];
 }
