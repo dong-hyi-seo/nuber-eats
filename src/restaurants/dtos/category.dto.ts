@@ -1,9 +1,14 @@
-import { ArgsType, Field, Int, ObjectType } from '@nestjs/graphql';
+import { ArgsType, Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { CoreOutput } from '../../common/dtos/output.dto';
 import { Category } from '../entities/category.entity';
+import {
+  PaginationInput,
+  PaginationOutput,
+} from '../../common/dtos/pagination.dto';
+import { Restaurant } from '../entities/restaurant.entity';
 
-@ArgsType()
-export class CategoryInput {
+@InputType()
+export class CategoryInput extends PaginationInput {
   @Field((type) => String)
   slug: string;
 }
@@ -12,7 +17,10 @@ export class CategoryInput {
  *  CoreOuput 은 모둔 output 객체에 공통으로 들어가는 필드들을 담고있음
  */
 @ObjectType()
-export class CategoryOutput extends CoreOutput {
+export class CategoryOutput extends PaginationOutput {
+  @Field((type) => [Restaurant], { nullable: true })
+  restaurants?: Restaurant[];
+
   @Field((type) => Category, { nullable: true })
   category?: Category;
 }
