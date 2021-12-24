@@ -10,6 +10,7 @@ import { JwtService } from '../jwt/jwt.service';
 import { MailService } from '../mail/mail.service.';
 import { getRepository, Repository } from 'typeorm';
 import exp from 'constants';
+import { CreateAccountInput } from './dto/create-account.dto';
 
 // 가짜 function 을 만든다
 const mockRepository = () => ({
