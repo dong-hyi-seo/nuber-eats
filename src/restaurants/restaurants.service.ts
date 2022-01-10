@@ -25,12 +25,18 @@ import {
   SearchRestaurantInput,
   SearchRestaurantOutput,
 } from './dtos/search-restaurant.dto';
+import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
+import { Dish } from './entities/dish.entity';
+import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
+import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) // decorator 사용 = (const restaurantRepository = connection.getRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
+    @InjectRepository(Dish) // decorator 사용 = (const restaurantRepository = connection.getRepository(Restaurant)
+    private readonly dishes: Repository<Dish>,
     @InjectRepository(Category)
     private readonly categories: CategoryRepository,
   ) {
@@ -217,7 +223,9 @@ export class RestaurantService {
     restaurantId,
   }: RestaurantInput): Promise<RestaurantOutput> {
     try {
-      const restaurant = await this.restaurants.findOne(restaurantId);
+      const restaurant = await this.restaurants.findOne(restaurantId, {
+        relations: ['menu'],
+      });
       if (!restaurant) {
         return {
           ok: true,
@@ -258,6 +266,115 @@ export class RestaurantService {
       };
     } catch {
       return { ok: false, error: 'Could not search for restaurant' };
+    }
+  }
+
+  async createDish(
+    owner: User,
+    createDishInput: CreateDishInput,
+  ): Promise<CreateDishOutput> {
+    try {
+      const restaurant = await this.restaurants.findOne(
+        createDishInput.restaurantId,
+      );
+
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: 'Restaurant not found',
+        };
+      }
+
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      const dish = await this.dishes.save(
+        this.dishes.create({ ...createDishInput, restaurant }),
+      );
+      console.log(dish);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        error: 'Could not create dish',
+      };
+    }
+  }
+
+  async editDish(
+    owner: User,
+    editDishInput: EditDishInput,
+  ): Promise<EditDishOutput> {
+    try {
+      const dish = await this.dishes.findOne(editDishInput.dishId, {
+        relations: ['restaurant'],
+      });
+      if (!dish) {
+        return {
+          ok: false,
+          error: 'Dish not found',
+        };
+      }
+      //위에서 findOne 으로 dish entity 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      await this.dishes.save([
+        {
+          id: editDishInput.dishId,
+          ...editDishInput,
+        },
+      ]);
+      return {
+        ok: true,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not edit dish',
+      };
+    }
+  }
+
+  async deleteDish(
+    owner: User,
+    deleteDishInput: DeleteDishInput,
+  ): Promise<DeleteDishOutput> {
+    try {
+      const dish = await this.dishes.findOne(deleteDishInput.dishId, {
+        relations: ['restaurant'],
+      });
+      if (!dish) {
+        return {
+          ok: false,
+          error: 'Dish not found',
+        };
+      }
+      //위에서 findOne 으로 dish entity 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: "You can't do that.",
+        };
+      }
+      await this.dishes.delete(deleteDishInput.dishId);
+      return {
+        ok: true,
+      };
+    } catch {
+      return {
+        ok: false,
+        error: 'Could not delete dish',
+      };
     }
   }
 }
