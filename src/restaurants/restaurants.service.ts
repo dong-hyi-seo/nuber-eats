@@ -321,7 +321,7 @@ export class RestaurantService {
           error: 'Dish not found',
         };
       }
-      //위에서 findOne 으로 dish entity 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
+      //위에서 findOne 으로 dish entities 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
       if (dish.restaurant.ownerId !== owner.id) {
         return {
           ok: false,
@@ -359,7 +359,7 @@ export class RestaurantService {
           error: 'Dish not found',
         };
       }
-      //위에서 findOne 으로 dish entity 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
+      //위에서 findOne 으로 dish entities 접근시에 restaurant 접근하려면 위 쿼리에 relations 관계 옵션을 주어야함
       if (dish.restaurant.ownerId !== owner.id) {
         return {
           ok: false,

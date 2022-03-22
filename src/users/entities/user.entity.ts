@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
 import { Restaurant } from '../../restaurants/entities/restaurant.entity';
+import { Order } from '../../orders/entities/order.entity.';
 
 export enum UserRole {
   Owner = 'Owner',
@@ -48,11 +49,19 @@ export class User extends CoreEntity {
   @OneToMany((type) => Restaurant, (restaurant) => restaurant.owner)
   restaurants: Restaurant[];
 
+  @Field((type) => [Order])
+  @OneToMany((type) => Order, (order) => order.customer)
+  orders: Order[];
+
+  @Field((type) => [Order])
+  @OneToMany((type) => Order, (order) => order.driver)
+  rides: Order[];
+
   /**
    * DB insert & update 전에 사용함
-   * update는 entity repository 를 사용하여 수행하는데 해당부분에서는 entity를 체크하지않아
+   * update는 entities repository 를 사용하여 수행하는데 해당부분에서는 entity를 체크하지않아
    * Beforeupdate를 못부른다. 방법은? save함수를 쓴다.
-   * 내부 save 함수는 데이터가없으면 저장하고 있으면 업데이트하는데 업데이트할경우 entity 체크하여
+   * 내부 save 함수는 데이터가없으면 저장하고 있으면 업데이트하는데 업데이트할경우 entities 체크하여
    * beforeupdate 수행
    */
   @BeforeInsert()

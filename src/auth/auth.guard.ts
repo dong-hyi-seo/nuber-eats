@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
       'roles',
       context.getHandler(),
     );
-    console.log('roles = ', roles);
     if (!roles) {
       return true;
     }
@@ -24,7 +23,6 @@ export class AuthGuard implements CanActivate {
     // 해당 가드는 graphql resolver 가기전 체크 함
     const gqlContext = GqlExecutionContext.create(context).getContext();
     const user: User = gqlContext['user'];
-    console.log('user = ', user);
     if (!user) {
       return false;
     }

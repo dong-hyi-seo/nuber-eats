@@ -13,10 +13,11 @@ import { Category } from './category.entity';
 import { User } from '../../users/entities/user.entity';
 import { RestaurantService } from '../restaurants.service';
 import { Dish } from './dish.entity';
+import { Order } from '../../orders/entities/order.entity.';
 
 /**
  * Create graphql restaurant field = @ObjectType()
- * AND postgresql entity 동시생성 = @Entity() - 자동 DB에 마이그레이션 진행
+ * AND postgresql entities 동시생성 = @Entity() - 자동 DB에 마이그레이션 진행
  * 즉, graphql field, postgresql field 동시에 정의
  * 위 graphql, postgresql field 뿐만아니라 create restaurant input dtos 역할도 동시에 해줄수있다 (@InputType)
  */
@@ -62,4 +63,8 @@ export class Restaurant extends CoreEntity {
   @Field((type) => [Dish])
   @OneToMany((type) => Dish, (dish) => dish.restaurant)
   menu: Dish[];
+
+  @Field((type) => [Order])
+  @OneToMany((type) => Order, (order) => order.restaurant)
+  orders: Order[];
 }
