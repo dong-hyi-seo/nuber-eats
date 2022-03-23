@@ -13,7 +13,7 @@ import { Dish } from '../../restaurants/entities/dish.entity';
 import { OrderItem } from './order-item.entity';
 import { IsEnum, IsNumber } from 'class-validator';
 
-enum OrderStatus {
+export enum OrderStatus {
   Pending = 'Pending',
   Cooking = 'Cooking',
   PickedUp = 'PickedUp',
