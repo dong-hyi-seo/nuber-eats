@@ -20,6 +20,11 @@ npm i @nestjs/graphql graphql-tools graphql apollo-server-express
           또한 websocket은 연결을 유지하고 req, header, cookie 이런게 없다,!
           PubSub는 publish and subscribe를 의미하며 이걸로 app 내부에서 메시지를 교환 할수 있음
           websocket은 jwtMiddleware가 별도로 무언가를 처리하지는 않는다.. 좀 바꿔야함...
-          jwtMiddleware 역할을 auth guard에서 하면됨 !!
+          jwtMiddleware 역할을 auth guard에서 하면됨 !
+    - pubsub
+        - pubsub는 위와 같이설명을 하였고, 단일서버에서는 new PubSub() 사용하면 되지만 만약 10개의 서버로
+          clustering 했을경우 분리된 서버를 사용해야한다 (ex :redis) ..
+        - lib : npm install graphql-redis-subscriptions
+        - 위 라이브러리는 redis-client도 제공
         
 

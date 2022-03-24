@@ -9,12 +9,15 @@ import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto';
 import { PubSub } from 'graphql-subscriptions';
-
-const pubsub = new PubSub();
+import { PUB_SUB } from '../common/common.constants';
+import { Inject } from '@nestjs/common';
 
 @Resolver((of) => Order)
 export class OrdersResolver {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
 
   @Mutation((returns) => CreateOrderOutput)
   @Role(['Client'])
@@ -61,18 +64,29 @@ export class OrdersResolver {
   //jwtMiddleware 역할을 auth guard에서 하면됨 !!
 
   @Mutation((returns) => Boolean)
-  potatoReady() {
+  async potatoReady(@Args('potatoId') potatoId: number) {
     //hotPotatos 이함수는 subscription trigger와 같아야함
-    pubsub.publish('hotPotatos', {
-      readyPotato: 'Your potato is ready, love you.',
+    await this.pubSub.publish('hotPotatos', {
+      readyPotato: potatoId,
     });
     return true;
   }
 
-  @Subscription((returns) => String)
+  @Subscription((returns) => String, {
+    filter: ({ readyPotato }, { potatoId }) => {
+      //해당 filter를 통하여 받으려고 하는 값만 받을수있음!!
+      //payload는 potatoReady에서보낸 message : 첫번째인자
+      //variables 값은 subscription(readyPotato input 값) : 두번째인자
+      //context 는 auth token 등의 값 (guard 에서 추가한것들) : 세번째인자
+      return readyPotato === potatoId;
+    },
+    //resolve 이건 사용자가 받는 update 알림의 형태를 바꿔주는 일을 한다.
+    //즉 filter를 거쳐 결과값나온걸 아래의 text 안에 값을 넣어 보여줄것임!
+    resolve: ({ readyPotato }) =>
+      `Your potato with the id ${readyPotato} is ready`,
+  })
   @Role(['Any'])
-  readyPotato(@AuthUser() user: User) {
-    console.log('user : ', user);
-    return pubsub.asyncIterator('hotPotatos');
+  readyPotato(@Args('potatoId') potatoId: number) {
+    return this.pubSub.asyncIterator('hotPotatos');
   }
 }
