@@ -5,7 +5,14 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  RelationId,
+} from 'typeorm';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { User } from '../../users/entities/user.entity';
 import { Restaurant } from '../../restaurants/entities/restaurant.entity';
@@ -31,6 +38,8 @@ export class Order extends CoreEntity {
     nullable: true,
   })
   customer?: User;
+  @RelationId((order: Order) => order.customer)
+  customerId: number;
 
   @Field((type) => User, { nullable: true })
   @ManyToOne((type) => User, (user) => user.rides, {
@@ -38,6 +47,8 @@ export class Order extends CoreEntity {
     nullable: true,
   }) //user.rides 는 User entity와의 관계에서 rides에 접근하고싶을떄 위와같은 설정을 주고 접근요소가 필요없을경우 설정안해줘도됨.
   driver?: User;
+  @RelationId((order: Order) => order.driver)
+  driverId: number;
 
   //restaurant 도 많은 orders(주문들)을 가진다.
   @Field((type) => Restaurant, { nullable: true })
