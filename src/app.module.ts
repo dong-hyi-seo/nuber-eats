@@ -65,10 +65,20 @@ import { OrderItem } from './orders/entities/order-item.entity';
       ],
     }),
     GraphQLModule.forRoot({
+      //이안에 context가 guard에 context를 제공한다는 말이된다.
       playground: process.env.NODE_ENV !== 'production',
       installSubscriptionHandlers: true,
       autoSchemaFile: true,
-      context: ({ req }) => ({ user: req['user'] }), // jwt middleware에서 받아서 req에 넣어놓은것을 공유함
+      context: ({ req, connection }) => {
+        const TOKEN_KEY = 'x-jwt';
+        //req는 http 통신에서 받는것이고 connection은 websocket(subscription)에서 받는다
+        //connection은 한번만 발생한다 .. 즉 jwt token을 처음에 딱 한번만 보낸다.
+        //connection log찍어보면 context key 값에 존재
+        //websocket(subscription)일 경우 여기다 guard에 보낼 값을 담아야한다.
+        return {
+          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
+        };
+      }, // jwt middleware에서 받아서 req에 넣어놓은것을 공유함
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
@@ -87,11 +97,4 @@ import { OrderItem } from './orders/entities/order-item.entity';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(JwtMiddleware).forRoutes({
-      path: '/graphql',
-      method: RequestMethod.POST,
-    });
-  }
-}
+export class AppModule {}
