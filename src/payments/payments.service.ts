@@ -82,7 +82,6 @@ export class PaymentsService {
       isPromoted: true,
       promotedUntil: LessThan(new Date()),
     });
-    console.log('restaurants = ', restaurants);
     restaurants.forEach(async (restaurant) => {
       restaurant.isPromoted = false;
       restaurant.promotedUntil = null;
