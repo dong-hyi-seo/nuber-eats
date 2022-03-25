@@ -30,11 +30,23 @@ npm i @nestjs/graphql graphql-tools graphql apollo-server-express
         - 위 라이브러리는 redis-client도 제공
 ### Type orm
 - Eager relations
-  - eager relation은 db에서 entity를 load할 때마다 자동으로 load되는 relationship을 말한다.
+  - eager 
+    - relation은 db에서 entity를 load할 때마다 자동으로 load되는 relationship을 말한다.
+    - 단, pagination 처리 불가
+    - 많은 entity를 가져오면 서버 불난다~
 ### Payments
 - 결제모듈
   - Paddle 사용(https://www.paddle.com/)
     - 해당 결제 시스템은 회사를 설립을 하지않더라도 등록이 가능하며 오로지 디지털내용물만 판매 가능하다.
     - 물건같은것은안됨 only 디지털!
+- Schedule (CRON) 사용
+  - npm install --save @nestjs/schedule
+  - 여러기능 존재
+    - cron
+    - interval
+    - timeout
+  - schedulerRegistery
+    - 각 위 schedule 기능에 name을 부여하고 그 name을 통하여 stop, start 기능 가능
+    - job lastDate값도 불러옴
         
 
