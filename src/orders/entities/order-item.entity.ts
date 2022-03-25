@@ -21,7 +21,7 @@ export class OrderItemOption {
 @Entity()
 export class OrderItem extends CoreEntity {
   //dish 는 order item에 접근할필요가없음 한마디로 메뉴에 대해서 해당 주문이 머머있는지 볼필요가 없다는건 그와 반대로
-  @Field((type) => [Dish], { nullable: true })
+  @Field((type) => Dish)
   @ManyToOne((type) => Dish, { nullable: true, onDelete: 'CASCADE' })
   dish: Dish;
 

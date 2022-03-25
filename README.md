@@ -7,6 +7,8 @@ The Backend of Nuber Eats clone
 ```bash
 npm i @nestjs/graphql graphql-tools graphql apollo-server-express
 ```
+### nest js module 추가 방법
+- nest g mo payments
 
 ### 인증로직순서
 - subscription(websocket 적용전)
@@ -26,5 +28,13 @@ npm i @nestjs/graphql graphql-tools graphql apollo-server-express
           clustering 했을경우 분리된 서버를 사용해야한다 (ex :redis) ..
         - lib : npm install graphql-redis-subscriptions
         - 위 라이브러리는 redis-client도 제공
+### Type orm
+- Eager relations
+  - eager relation은 db에서 entity를 load할 때마다 자동으로 load되는 relationship을 말한다.
+### Payments
+- 결제모듈
+  - Paddle 사용(https://www.paddle.com/)
+    - 해당 결제 시스템은 회사를 설립을 하지않더라도 등록이 가능하며 오로지 디지털내용물만 판매 가능하다.
+    - 물건같은것은안됨 only 디지털!
         
 

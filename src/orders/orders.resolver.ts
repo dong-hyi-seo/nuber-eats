@@ -9,8 +9,15 @@ import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto';
 import { PubSub } from 'graphql-subscriptions';
-import { PUB_SUB } from '../common/common.constants';
+import {
+  NEW_COOKED_ORDER,
+  NEW_ORDER_UPDATE,
+  NEW_PENDING_ORDER,
+  PUB_SUB,
+} from '../common/common.constants';
 import { Inject } from '@nestjs/common';
+import { OrderUpdatesInput } from './dtos/order-updates.dto';
+import { TakeOrderInput, TakeOrderOutput } from './dtos/take-order.dto';
 
 @Resolver((of) => Order)
 export class OrdersResolver {
@@ -55,6 +62,61 @@ export class OrdersResolver {
     return this.orderService.editOrder(user, editOrderInput);
   }
 
+  @Subscription((returns) => Order, {
+    // filter 두번째 인자는 원래 args 인데 '_"를 쓴이유는 사용안하겠다를 나타낸다.
+    filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
+      //이부분에서 context 값의 user 데이터를 활용하여 order가 만들어진 restaurant이 user의 restaurant 인지 확인!
+      return ownerId === user.id;
+    },
+    resolve: ({ pendingOrders: { order } }) => order,
+  })
+  @Role(['Owner'])
+  pendingOrders() {
+    return this.pubSub.asyncIterator(NEW_PENDING_ORDER);
+  }
+
+  @Subscription((returns) => Order, {
+    filter: (payload, _, context) => {
+      console.log('payload : ', payload);
+      return true;
+    },
+  })
+  @Role(['Delivery'])
+  cookedOrders() {
+    return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
+  }
+
+  @Subscription((returns) => Order, {
+    filter: (
+      { orderUpdates: order }: { orderUpdates: Order },
+      { input }: { input: OrderUpdatesInput },
+      { user }: { user: User },
+    ) => {
+      console.log('order = ', order);
+      if (
+        order.driverId !== user.id &&
+        order.customerId !== user.id &&
+        order.restaurant.ownerId !== user.id
+      ) {
+        return false;
+      }
+      return order.id === input.id;
+    },
+  })
+  @Role(['Any'])
+  orderUpdates(@Args('input') orderUpdatesInput: OrderUpdatesInput) {
+    return this.pubSub.asyncIterator(NEW_ORDER_UPDATE);
+  }
+
+  @Mutation((returns) => TakeOrderOutput)
+  @Role(['Delivery'])
+  takeOrder(
+    @AuthUser() driver: User,
+    @Args('input') takeOrderInput: TakeOrderInput,
+  ): Promise<TakeOrderOutput> {
+    return this.orderService.takeOrder(driver, takeOrderInput);
+  }
+
   //subscription은 websocket 설정을 해야한다. app.module.ts에 가서 groupql module에
   //installSubscriptionHandlers: true, 이와같은 설정을 줘야함.
   //또한 HTTP route를 거치지 않고 web socket route를 거친다.
@@ -62,7 +124,6 @@ export class OrdersResolver {
   //PubSub는 publish and subscribe를 의미하며 이걸로 app 내부에서 메시지를 교환 할수 있음
   //websocket은 jwtMiddleware가 별도로 무언가를 처리하지는 않는다.. 좀 바꿔야함...
   //jwtMiddleware 역할을 auth guard에서 하면됨 !!
-
   @Mutation((returns) => Boolean)
   async potatoReady(@Args('potatoId') potatoId: number) {
     //hotPotatos 이함수는 subscription trigger와 같아야함
