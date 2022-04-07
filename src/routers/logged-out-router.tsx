@@ -10,7 +10,18 @@ export const LoggedOutRouter = () => {
   return (
     <div>
       <h1>Logged Out</h1>
-      <button onClick={onClick}>Click to login</button>
+      <div>
+        <input name="email" type="email" required placeholder="email"></input>
+      </div>
+      <div>
+        <input
+          name="password"
+          type="password"
+          required
+          placeholder="password"
+        />
+      </div>
+      <button className="">afaf</button>
     </div>
   );
 };

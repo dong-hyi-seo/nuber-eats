@@ -15,6 +15,6 @@
     - server에는 없지만 application에는 있기를 바라는 그런 state
 
 ## React Hook Form
-- 순수 html로 login 구현할때 state값 그리고 validation 다적용해야 하는데
+- 순수 html로 login 구현할때 state값 그리고 validation 다 적용해야 하는데
 해당 React Hook Form을 사용하면 편리해짐.
 
