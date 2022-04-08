@@ -5,11 +5,15 @@ export const LoggedOutRouter = () => {
   const { register, watch, handleSubmit } = useForm();
   //register 는 input에서 받은값을 지정하고
   //watch는 register에 입력될때마다 값을 받음
+
+  //react form 제출 함수
   const onSubmit = () => {
     console.log(watch('email'));
   };
+
+  //login valid!!
   const onInvalid = () => {
-    console.log('cant ddd');
+    console.log('cant login account');
   };
   return (
     <div>
