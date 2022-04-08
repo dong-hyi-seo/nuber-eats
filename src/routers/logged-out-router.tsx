@@ -14,10 +14,13 @@ export const LoggedOutRouter = () => {
   return (
     <div>
       <h1>Logged Out</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <div>
           <input
-            {...register('email', { required: true })}
+            {...register('email', {
+              required: true,
+              validate: (email: string) => email.includes('@gmail.com'),
+            })}
             name="email"
             type="email"
             required
