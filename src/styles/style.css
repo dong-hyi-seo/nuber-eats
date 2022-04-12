@@ -490,14 +490,29 @@ Ensure the default browser behavior of the `hidden` attribute.
   justify-content: center;
 }
 
-.bg-gray-800 {
+.bg-orange-800 {
   --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+  background-color: rgb(154 52 18 / var(--tw-bg-opacity));
 }
 
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-yellow-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(133 77 14 / var(--tw-bg-opacity));
+}
+
+.bg-gray-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+
+.bg-pink-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(157 23 77 / var(--tw-bg-opacity));
 }
 
 .text-lg {
