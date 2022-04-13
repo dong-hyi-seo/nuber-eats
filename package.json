@@ -30,7 +30,7 @@
     "start": "npm run tailwind:build & react-scripts start",
     "start:dev": "concurrently \"npm run apollo:codegen\" \"npm run tailwind:watch\" \"react-scripts start\"",
     "tailwind:watch": "tailwindcss -i ./src/styles/tailwind.css -o src/styles/style.css --watch",
-    "apollo:codegen": "apollo client:codegen --target=typescript --outputFlat",
+    "apollo:codegen": "apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
