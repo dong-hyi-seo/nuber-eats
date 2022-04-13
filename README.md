@@ -6,7 +6,7 @@ dependency lib list
 - 클래스 이름에 접두사 호환성울 추가해주는 library 
 - firefox, chrome, ms 등의 CSS 호환되지않는것들..
 
-### 2. Apollo client
+### 2. Apollo client()
 - Reactive variables
   - Local-only fields
     - Graphql 서버의 스키마에 정의되지 않은 것을 말함.
