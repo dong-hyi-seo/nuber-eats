@@ -37,4 +37,7 @@ dependency lib list
     - 모든변수둘의 interface를 만들어줌!!
     - `apollo client:codegen --target=typescript --outputFlat`
     - 위와같이 실행하면은 root 디렉토리에 __generated__폴더가 생기며 하위에 각 schema interface 들이 정의된 ts파일들이 존재하게 된다.
-
+### 5. rimraf
+- 해당 library는 mac, window crossplatform 지원
+- 이것도 마찬가지로 호환성을 위해서 yarn으로 설치해주자
+- `yarn add rimraf`
