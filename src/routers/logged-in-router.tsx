@@ -23,7 +23,7 @@ export const LoggedInRouter = () => {
   const { data, loading, error } = useQuery(ME_QUERY);
   //header에 token 셋팅안해주면 error 남 (graphql 모든 request에 header에 담아줘야하니까 apollo.ts 에서 설정한다)
   console.log('error', error);
-  console.log('data.me.role', data.me.role);
+  console.log('data', data);
   if (!data || loading || error) {
     return (
       <div className="h-screen flex justify-center items-center">
