@@ -9,7 +9,9 @@ import {
 } from '../__generated__/loginMutation';
 import { Button } from '../components/button';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import { authTokenVar, isLoggedInVar } from '../apollo';
+import { LOCALSTORAGE_TOKEN } from '../constants';
 
 /**
  * 항상 화면을 작성할때 모바일부터 생각하고 그다음 패드 그다음 데스크탑순으로 작성!
@@ -42,8 +44,10 @@ export const Login = () => {
     const {
       login: { ok, token },
     } = data;
-    if (ok) {
-      console.log('token = ', token);
+    if (ok && token) {
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+      authTokenVar(token);
+      isLoggedInVar(true);
     }
   };
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
@@ -81,7 +85,11 @@ export const Login = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid gap-3 mt-5 w-full mb-5">
           <input
-            {...register('email', { required: 'Email is required' })}
+            {...register('email', {
+              pattern:
+                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              required: 'Email is required',
+            })}
             name="email"
             required
             type="email"
@@ -90,6 +98,9 @@ export const Login = () => {
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
+          )}
+          {errors.email?.type === 'pattern' && (
+            <FormError errorMessage="Please enter a valid email" />
           )}
           <input
             {...register('password', {

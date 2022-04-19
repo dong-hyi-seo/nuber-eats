@@ -41,3 +41,8 @@ dependency lib list
 - 해당 library는 mac, window crossplatform 지원
 - 이것도 마찬가지로 호환성을 위해서 yarn으로 설치해주자
 - `yarn add rimraf`
+
+Reference Site
+===
+1. 이메일 REGEX
+- https://emailregex.com/

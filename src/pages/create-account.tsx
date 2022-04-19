@@ -8,9 +8,10 @@ import {
   createAccountMutationVariables,
 } from '../__generated__/createAccountMutation';
 import { Button } from '../components/button';
-import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { UserRole } from '../__generated__/globalTypes';
+import { Simulate } from 'react-dom/test-utils';
 
 /**
  * 항상 화면을 작성할때 모바일부터 생각하고 그다음 패드 그다음 데스크탑순으로 작성!
@@ -43,11 +44,37 @@ export const CreateAccount = () => {
     },
     //별도설정을 해줘야함
   });
-  const onCompleted = (data: createAccountMutation) => {};
-  const [createAccountMutation] = useMutation(CREATE_ACCOUNT_MUTATION, {
-    onCompleted,
-  });
+  //react-router-dom v5 -> v6 업그  레이드 되면서 useHistory 사라지고 useNavigate가 생김.
+  const navigate = useNavigate();
+  const onCompleted = (data: createAccountMutation) => {
+    const {
+      createAccount: { ok, error },
+    } = data;
+    if (ok) {
+      //alert
+      alert('Account Created! Log in now!');
+      //redirect login page
+      navigate('/', { replace: true });
+    }
+  };
+  const [
+    createAccountMutation,
+    { loading, data: createAccountMutationResult },
+  ] = useMutation<createAccountMutation, createAccountMutationVariables>(
+    CREATE_ACCOUNT_MUTATION,
+    {
+      onCompleted,
+    },
+  );
   const onSubmit = () => {
+    if (!loading) {
+      const { email, password, role } = getValues();
+      createAccountMutation({
+        variables: {
+          createAccountInput: { email, password, role },
+        },
+      });
+    }
     console.log('watch = ', watch());
   };
   return (
@@ -64,7 +91,11 @@ export const CreateAccount = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="grid gap-3 mt-5 w-full mb-5">
           <input
-            {...register('email', { required: 'Email is required' })}
+            {...register('email', {
+              pattern:
+                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              required: 'Email is required',
+            })}
             name="email"
             required
             type="email"
@@ -73,6 +104,9 @@ export const CreateAccount = () => {
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
+          )}
+          {errors.email?.type === 'pattern' && (
+            <FormError errorMessage="Please enter a valid email" />
           )}
           <input
             {...register('password', {
@@ -97,9 +131,14 @@ export const CreateAccount = () => {
           </select>
           <Button
             canClick={formState.isValid}
-            loading={false}
+            loading={loading}
             actionText={'Create Account'}
           />
+          {createAccountMutationResult?.createAccount.error && (
+            <FormError
+              errorMessage={createAccountMutationResult.createAccount.error}
+            />
+          )}
         </form>
         <div>
           Already have an account?{' '}
