@@ -11,6 +11,7 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
+    "@types/react-helmet": "^6.1.5",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.4",
     "concurrently": "^7.1.0",
@@ -18,6 +19,7 @@
     "postcss": "^8.4.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
     "react-hook-form": "^7.29.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.1",
@@ -29,6 +31,7 @@
   "scripts": {
     "tailwind:build": "tailwind build ./src/styles/tailwind.css -o ./src/styles/style.css",
     "start": "npm run tailwind:build & react-scripts start",
+    "start:local": "npm run apollo:codegen & npm run tailwind:watch & react-scripts start",
     "start:dev": "concurrently \"npm run apollo:codegen\" \"npm run tailwind:watch\" \"react-scripts start\"",
     "tailwind:watch": "tailwindcss -i src/styles/tailwind.css -o src/styles/style.css --watch",
     "apollo:codegen": "rimraf src/__generated__ && apollo client:codegen src/__generated__ --target=typescript --outputFlat",

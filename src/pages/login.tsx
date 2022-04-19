@@ -9,6 +9,7 @@ import {
 } from '../__generated__/loginMutation';
 import { Button } from '../components/button';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 /**
  * 항상 화면을 작성할때 모바일부터 생각하고 그다음 패드 그다음 데스크탑순으로 작성!
@@ -68,6 +69,9 @@ export const Login = () => {
   };
   return (
     <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <Helmet>
+        <title>Login | Nuber Eats</title>
+      </Helmet>
       <div className="w-full max-w-screen-md flex flex-col px-5 items-center">
         <img src={nuberLog} className="w-52 mb-10" />
         <h4 className="w-full font-medium text-left text-3xl mb-5">
