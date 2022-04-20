@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/from-error';
 import { gql, useMutation } from '@apollo/client';
-import nuberLog from '../images/log.svg';
+import nuberLog from '../images/logo.svg';
 import {
   loginMutation,
   loginMutationVariables,

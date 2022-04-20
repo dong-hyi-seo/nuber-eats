@@ -1,5 +1,4 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
 import {
   BrowserRouter as Router,
   Navigate,
@@ -7,26 +6,15 @@ import {
   Routes,
 } from 'react-router-dom';
 import { Restaurants } from '../pages/client/restaurants';
-const ClientRoutes = [
-  <Route path="/" element={<Restaurants />} />,
-  <Route path="/potato" element={<Navigate to="/" replace />} />,
-];
-const ME_QUERY = gql`
-  query meQuery {
-    me {
-      id
-      email
-      role
-      verified
-    }
-  }
-`;
+import { Header } from '../components/header';
+import { useMe } from '../hooks/useMe';
+import { NotFound } from '../pages/404';
+
+const ClientRoutes = [<Route path="/" element={<Restaurants />} />];
 
 export const LoggedInRouter = () => {
-  const { data, loading, error } = useQuery(ME_QUERY);
+  const { data, loading, error } = useMe();
   //header에 token 셋팅안해주면 error 남 (graphql 모든 request에 header에 담아줘야하니까 apollo.ts 에서 설정한다)
-  console.log('error', error);
-  console.log('data', data);
   if (!data || loading || error) {
     return (
       <div className="h-screen flex justify-center items-center">
@@ -38,7 +26,11 @@ export const LoggedInRouter = () => {
   //routes 는 route밖에 87못가짐
   return (
     <Router>
-      <Routes>{data.me.role === 'Client' && ClientRoutes}</Routes>
+      <Header />
+      <Routes>
+        {data.me.role === 'Client' && ClientRoutes}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </Router>
   );
 };

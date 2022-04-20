@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/from-error';
 import { gql, useMutation } from '@apollo/client';
-import nuberLog from '../images/log.svg';
+import nuberLog from '../images/logo.svg';
 import {
   createAccountMutation,
   createAccountMutationVariables,
@@ -11,7 +11,6 @@ import { Button } from '../components/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { UserRole } from '../__generated__/globalTypes';
-import { Simulate } from 'react-dom/test-utils';
 
 /**
  * 항상 화면을 작성할때 모바일부터 생각하고 그다음 패드 그다음 데스크탑순으로 작성!
