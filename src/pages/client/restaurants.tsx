@@ -1,3 +1,7 @@
 import React from 'react';
 
-export const Restaurants = () => <div>teset</div>;
+export const Restaurants = () => (
+  <div>
+    <span>ttttt</span>
+  </div>
+);

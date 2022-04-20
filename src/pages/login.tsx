@@ -60,7 +60,6 @@ export const Login = () => {
     if (!loading) {
       //loading 중일때는 back-end에 submit 보내기가 싫다!
       const { email, password } = getValues();
-      console.log(getValues());
       loginMutation({
         variables: {
           loginInput: {

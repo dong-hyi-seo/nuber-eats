@@ -7,7 +7,10 @@ import {
   Routes,
 } from 'react-router-dom';
 import { Restaurants } from '../pages/client/restaurants';
-const ClientRoutes = [<Route path="/restaurants" element={<Restaurants />} />];
+const ClientRoutes = [
+  <Route path="/" element={<Restaurants />} />,
+  <Route path="/potato" element={<Navigate to="/" replace />} />,
+];
 const ME_QUERY = gql`
   query meQuery {
     me {
@@ -35,10 +38,7 @@ export const LoggedInRouter = () => {
   //routes 는 route밖에 87못가짐
   return (
     <Router>
-      <Routes>
-        {data.me.role === 'Client' && ClientRoutes}
-        <Navigate to="/" />
-      </Routes>
+      <Routes>{data.me.role === 'Client' && ClientRoutes}</Routes>
     </Router>
   );
 };
