@@ -7,10 +7,11 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ApolloProvider } from '@apollo/client';
 import client from './apollo';
 
+const helmetContext = {};
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <HelmetProvider>
+      <HelmetProvider context={helmetContext}>
         <App />
       </HelmetProvider>
     </ApolloProvider>
