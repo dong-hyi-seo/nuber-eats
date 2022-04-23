@@ -18,10 +18,13 @@ const VERIFY_EMAIL_MYTATION = gql`
 `;
 
 export const ConfirmEmail = () => {
-  const { data: userData } = useMe();
+  //refetch(apollo useQuery 기능) refetch call을 하면 cache가 자동적으로 update 됨. apollo가 자동으로 cache 업데이트를 함
+  //단 refetch는 promise여서 async, await을 써야함
+  //단 ! backend에 계속 다시 요청하기때문에 만약 backend에 부하가 간다면 writeFragment를 사용한다 !
+  const { data: userData, refetch } = useMe();
   const client = useApolloClient();
   const navigate = useNavigate();
-  const onCompleted = (data: verifyEmail) => {
+  const onCompleted = async (data: verifyEmail) => {
     const {
       verifyEmail: { ok },
     } = data;

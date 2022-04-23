@@ -5,10 +5,12 @@ import { Header } from '../components/header';
 import { useMe } from '../hooks/useMe';
 import { NotFound } from '../pages/404';
 import { ConfirmEmail } from '../pages/user/confirm-email';
+import { EditProfile } from '../pages/user/edit-profile';
 
 const ClientRoutes = [
-  <Route path="/" element={<Restaurants />} />,
-  <Route path="/confirm" element={<ConfirmEmail />} />,
+  <Route path="/" key={1} element={<Restaurants />} />,
+  <Route path="/confirm" key={2} element={<ConfirmEmail />} />,
+  <Route path="/edit-profile" key={3} element={<EditProfile />} />,
 ];
 
 export const LoggedInRouter = () => {
