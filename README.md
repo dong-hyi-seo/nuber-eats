@@ -46,3 +46,15 @@ Reference Site
 ===
 1. 이메일 REGEX
 - https://emailregex.com/
+
+Apollo Client (Graphql)
+===
+1. apollo client Lazy Query
+- useQuery 같은경우 react 렌더링할경우 자동으로 쿼리(graphql query)를 실행한다.
+그러나 사용자가 버튼을 클릭하는 것과 같은 다른 이벤트에 대한 응답으로 쿼리를 실행하려면 useLazyQuery 사용!!
+useLazyQuery hook은 구성요소 렌더링 외에 이벤트에 대한 응답으로 쿼리를 실행하는데 적합하다.
+useQuery와 달리 useLazyQuery를 호출하면 연결된 쿼리가 즉시 실행되지 않는다. 대신 쿼리를 실행 할 준비가 될 떄마다 호출하는 쿼리함수를 결과 튜플에 반환!
+
+2. Fragments
+- Fragments란 쿼리의 이룹분을 재활용 가능한 단위로 나눠놓은것이다.
+

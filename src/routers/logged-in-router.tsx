@@ -6,11 +6,17 @@ import { useMe } from '../hooks/useMe';
 import { NotFound } from '../pages/404';
 import { ConfirmEmail } from '../pages/user/confirm-email';
 import { EditProfile } from '../pages/user/edit-profile';
+import { Search } from '../pages/client/search';
+import { Category } from '../pages/client/category';
+import { Restaurant } from '../pages/client/restaurant';
 
 const ClientRoutes = [
   <Route path="/" key={1} element={<Restaurants />} />,
   <Route path="/confirm" key={2} element={<ConfirmEmail />} />,
   <Route path="/edit-profile" key={3} element={<EditProfile />} />,
+  <Route path="/search" key={4} element={<Search />} />,
+  <Route path="/category/:slug" key={5} element={<Category />} />,
+  <Route path="/restaurant/:id" key={5} element={<Restaurant />} />,
 ];
 
 export const LoggedInRouter = () => {
